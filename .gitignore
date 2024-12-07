@@ -16,3 +16,6 @@ setting.env
 # logs folder
 **/logs/*
 !**/logs/.gitkeep
+
+# key
+keys.json
