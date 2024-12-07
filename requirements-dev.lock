@@ -9,3 +9,14 @@
 #   generate-hashes: false
 
 -e file:.
+annotated-types==0.7.0
+    # via pydantic
+pydantic==2.10.3
+    # via taobao-cwl
+pydantic-core==2.27.1
+    # via pydantic
+python-dotenv==1.0.1
+    # via taobao-cwl
+typing-extensions==4.12.2
+    # via pydantic
+    # via pydantic-core
