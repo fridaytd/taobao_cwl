@@ -5,6 +5,7 @@ description = "Taobao crawler"
 dependencies = [
     "python-dotenv>=1.0.1",
     "pydantic>=2.10.3",
+    "gspread>=6.1.4",
 ]
 readme = "README.md"
 requires-python = ">= 3.8"
