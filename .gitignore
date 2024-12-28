@@ -19,3 +19,10 @@ setting.env
 
 # key
 keys.json
+
+# User data
+**/user_data/*
+!**/user_data/.gitkeep
+
+# Downloaded_files
+**/downloaded_files/*

@@ -4,3 +4,7 @@ class AppError(Exception):
 
 class JsonError(AppError):
     pass
+
+
+class CrwlError(AppError):
+    pass

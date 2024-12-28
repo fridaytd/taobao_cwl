@@ -1,30 +1,30 @@
-import os
-import time
-
+from app.processes import login, is_logged_in
+from seleniumbase import SB
+from app.utils.gsheet import worksheet
+from app.models.sheet_models import Product
+from app.processes import run
+from app.utils.paths import USER_DATA_PATH
 from app.utils.logger import logger
-from app.utils.browser import BrwDriver, get_chrome_profile_path
-from selenium import webdriver
 
-options = webdriver.ChromeOptions()
+with SB(
+    uc=True,
+    user_data_dir=str(USER_DATA_PATH),
+    headless=False,
+) as sb:
+    sb.activate_cdp_mode("https://taobao.com")
+    if not is_logged_in(sb):
+        logger.info("You must login")
+        login(sb)
 
-profile_path = get_chrome_profile_path()
-print(profile_path)
+    while True:
+        for i in range(5, 11):
+            logger.info(f"Processing: {i}")
+            product = Product.get(worksheet, i)
 
-options.add_argument(f"user-data-dir={os.path.dirname(profile_path)}")
-options.add_argument("--profile-directory=Default")
+            try:
+                run(sb, product)
+            except Exception as e:
+                logger.error(i)
+                logger.exception(e)
 
-driver = BrwDriver(options=options)
-
-
-driver.get("https://google.com")
-print(driver.execute_script("return navigator.userAgent;"))
-time.sleep(1)
-driver.random_user_agent()
-driver.get("https://codeforces.com")
-print(driver.execute_script("return navigator.userAgent;"))
-driver.random_user_agent()
-print(driver.execute_script("return navigator.userAgent;"))
-
-print(get_chrome_profile_path())
-print("sleeping")
-time.sleep(1000)
+            sb.cdp.sleep(2)

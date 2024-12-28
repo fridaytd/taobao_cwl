@@ -3,6 +3,7 @@ from typing import Annotated, Self
 from gspread.worksheet import Worksheet
 
 from app.shared.consts import COL_META_FIELD_NAME
+from app.decorators import retry_on_fail
 
 
 class ColSheetModel(BaseModel):
@@ -49,6 +50,7 @@ class ColSheetModel(BaseModel):
             count += 1
         return cls.model_validate(model_dict)
 
+    @retry_on_fail()
     def update(
         self,
     ) -> None:
