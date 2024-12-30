@@ -1,4 +1,7 @@
-from app.processes import login, is_logged_in
+from datetime import datetime
+import time
+from pydantic import ValidationError
+from app.processes import last_update_message, login, is_logged_in
 from seleniumbase import SB
 from app.utils.gsheet import worksheet
 from app.models.sheet_models import Product
@@ -45,10 +48,31 @@ with SB(
         logger.info(f"Run index: {run_indexes}")
         for index in run_indexes:
             logger.info(f"Processing: {index}")
-            product = Product.get(worksheet, index)
-
             try:
+                product = Product.get(worksheet, index)
+
                 run(sb, product)
+            except ValidationError as e:
+                logger.error(f"VALIDATION ERROR AT ROW: {index}")
+                logger.error(e.errors())
+                try:
+                    now = datetime.now()
+                    worksheet.batch_update(
+                        [
+                            {
+                                "range": f"J{index}",
+                                "values": [
+                                    [
+                                        f"{last_update_message(now)}: VALIDATION ERROR AT ROW: {index}"
+                                    ]
+                                ],
+                            }
+                        ]
+                    )
+                except Exception as e:
+                    logger.error(e)
+                    time.sleep(10)
+
             except Exception as e:
                 logger.exception(e)
 
