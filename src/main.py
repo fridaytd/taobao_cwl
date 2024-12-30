@@ -32,6 +32,7 @@ with SB(
     uc=True,
     user_data_dir=str(USER_DATA_PATH),
     headless=False,
+    maximize=True,
 ) as sb:
     sb.activate_cdp_mode("https://taobao.com")
     # time.sleep(10000)
