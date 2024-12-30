@@ -17,10 +17,31 @@ def sb_sleep_random(sb, min: float = 1, max: float = 3):
 def is_logged_in(
     sb,
 ) -> bool:
+    sb_sleep_random(sb, 2, 3)
     try:
         a_info_nick = sb.cdp.locator("a.site-nav-login-info-nick", timeout=3)
         if a_info_nick:
+            try:
+                go_login_info = sb.cdp.locator('div[class^="GoLoginInfo"]', timeout=3)
+                if go_login_info:
+                    return False
+            except Exception:
+                pass
             return True
+    except Exception:
+        pass
+
+    return False
+
+
+def is_must_verify_by_captcha(
+    sb,
+) -> bool:
+    try:
+        captcha_tips = sb.cdp.locator("div.captcha-tips", timeout=3)
+        if captcha_tips:
+            return True
+
     except Exception:
         pass
 
@@ -56,6 +77,14 @@ def crwl_for_one(
     if is_error_page(soup):
         raise AppError("Product link is invalid!!!")
 
+    # Check captcha
+    while True:
+        if is_must_verify_by_captcha(sb):
+            logger.info("You must verify captcha")
+            sb.cdp.sleep(4)
+        else:
+            break
+
     # Check if login
     if not is_logged_in(sb):
         # Go to login page if no login
@@ -75,9 +104,9 @@ def crwl_for_one(
             "html.parser",
         )
         if whether_need_to_click(soup, product.Selection_1):
-            logger.info(f"Click at: {product.Selection_1}")
             tag = sb.cdp.find_element_by_text(product.Selection_1)
             sb_sleep_random(sb)
+            logger.info(f"Click at: {product.Selection_1}")
             tag.click()
         else:
             logger.info(f"{product.Selection_1} is selected already")
@@ -88,9 +117,9 @@ def crwl_for_one(
             "html.parser",
         )
         if whether_need_to_click(soup, product.Selection_2):
-            logger.info(f"Click at: {product.Selection_2}")
             tag = sb.cdp.find_element_by_text(product.Selection_2)
             sb_sleep_random(sb)
+            logger.info(f"Click at: {product.Selection_2}")
             tag.click()
         else:
             logger.info(f"{product.Selection_2} is selected already")
@@ -101,9 +130,9 @@ def crwl_for_one(
             "html.parser",
         )
         if whether_need_to_click(soup, product.Selection_3):
-            logger.info(f"Click at: {product.Selection_3}")
             tag = sb.cdp.find_element_by_text(product.Selection_3)
             sb_sleep_random(sb)
+            logger.info(f"Click at: {product.Selection_3}")
             tag.click()
         else:
             logger.info(f"{product.Selection_3} is selected already")
