@@ -17,7 +17,7 @@ def sb_sleep_random(sb, min: float = 1, max: float = 3):
 def is_logged_in(
     sb,
 ) -> bool:
-    sb_sleep_random(sb, 2, 3)
+    sb_sleep_random(sb, 1, 2)
     try:
         a_info_nick = sb.cdp.locator("a.site-nav-login-info-nick", timeout=3)
         if a_info_nick:
@@ -37,8 +37,9 @@ def is_logged_in(
 def is_must_verify_by_captcha(
     sb,
 ) -> bool:
+    sb_sleep_random(sb, 2, 3)
     try:
-        captcha_tips = sb.cdp.locator("div.captcha-tips", timeout=3)
+        captcha_tips = sb.cdp.locator("div.J_MIDDLEWARE_FRAME_WIDGET", timeout=3)
         if captcha_tips:
             return True
 
