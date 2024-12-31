@@ -90,14 +90,19 @@ def extract_info(
             "class": re.compile("^ItemTitle.*"),
         }
     )
+
     if isinstance(item_title_tag, Tag):
-        parent_price_tag = item_title_tag.find_next_sibling()
+        parent_price_tag = soup.find(
+            attrs={"class": re.compile("^displayPrice.*")},
+        )
+
         if isinstance(parent_price_tag, Tag):
             price_tag = parent_price_tag.find(
                 attrs={
                     "class": re.compile("^text.*"),
                 }
             )
+
             if isinstance(price_tag, Tag):
                 price_tag_txt = price_tag.get_text(strip=True)
                 price = float(price_tag_txt)
